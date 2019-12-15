@@ -1,12 +1,55 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-    </View>
-  );
+export default class App extends React.Component {
+
+  state = {
+    isLoading: false,
+    photos: []
+  }
+
+  fetchPhotos = () => {
+    this.setState({ isLoading: true });
+    fetch("https://jsonplaceholder.typicode.com/photos?_start=1&_limit=200")
+      .then(data => data.json())
+      .then(photos => {
+        this.setState({ 
+          isLoading: false,
+          photos: photos  
+        });
+      });
+  }
+
+  componentDidMount() {
+      this.fetchPhotos();
+  }
+
+  render() {
+    const { isLoading, photos } = this.state;
+
+    if (isLoading) {
+      return (
+        <View style={styles.container}>
+          <Text>Loading ...</Text>
+        </View>
+      );
+    }
+
+    if (!isLoading && photos.length < 1) {
+      return (
+        <View style={styles.container}>
+          <Text>Loading ...</Text>
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.container}>
+        <Text>Number of loaded photos: {photos.length}</Text>
+        <Button title="Reload" onPress={this.fetchPhotos}/>
+      </View>
+    );
+  } 
 }
 
 const styles = StyleSheet.create({
@@ -14,6 +57,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
 });

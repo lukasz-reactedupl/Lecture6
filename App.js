@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, FlatList, Image} from 'react-native';
+import PhotoListItem from './PhotoListItem';
 
 export default class App extends React.Component {
 
@@ -10,7 +11,7 @@ export default class App extends React.Component {
 
   fetchPhotos = () => {
     this.setState({ isLoading: true });
-    fetch("https://jsonplaceholder.typicode.com/photos?_start=1&_limit=40")
+    fetch("https://jsonplaceholder.typicode.com/photos?_start=1&_limit=30")
       .then(data => data.json())
       .then(photos => {
         this.setState({ 
@@ -22,6 +23,18 @@ export default class App extends React.Component {
 
   componentDidMount() {
       this.fetchPhotos();
+  }
+
+  FlatListItemSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: "100%",
+          backgroundColor: "#e0e0eb",
+        }}
+      />
+    );
   }
 
   render() {
@@ -47,11 +60,8 @@ export default class App extends React.Component {
       <View style={styles.container}>
         <FlatList
           data={photos}
-          renderItem={({item}) => 
-          <View style={{flex:1, flexDirection: 'row', marginRight: 5}}>
-            <Text style={styles.textView}>{item.title}</Text>
-            <Image source = {{ uri: item.thumbnailUrl }} style={styles.imageView} />
-          </View>}
+          renderItem={({item}) => <PhotoListItem photo={item} /> }
+          ItemSeparatorComponent={this.FlatListItemSeparator}
           keyExtractor={photo => photo.id}
         />
         <Button title="Reload" onPress={this.fetchPhotos}/>
@@ -67,17 +77,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     margin: 5
-  },
-  imageView: {
-    width: '50%',
-    height: 100 ,
-    margin: 7,
-    borderRadius : 7
-  },
-  textView: {
-    width:'50%', 
-    textAlignVertical:'center',
-    padding:10,
-    color: '#000'
   }
 });

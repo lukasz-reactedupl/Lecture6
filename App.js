@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, FlatList, ScrollView } from 'react-native';
 
 export default class App extends React.Component {
 
@@ -45,8 +45,10 @@ export default class App extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Text>Number of loaded photos: {photos.length}</Text>
-        <Button title="Reload" onPress={this.fetchPhotos}/>
+        <ScrollView>
+          {photos.map(photo => <Text>{photo.title}</Text>)}
+          <Button title="Reload" onPress={this.fetchPhotos}/>
+        </ScrollView>
       </View>
     );
   } 
